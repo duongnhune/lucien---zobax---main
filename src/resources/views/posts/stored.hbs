@@ -1,0 +1,78 @@
+<div class="container my-5">
+    <div class="title title-post">
+        <div>
+			<h4>Danh sách bài viết</h4>
+			<a class="pt-2 d-inline-block" href="/posts/trash">Thùng rác ({{deletedCount}})</a>
+		</div>
+        <a href="/posts/create" class="my-background py-2 px-4 text-white">Add -></a>
+    </div>
+    <div class="mt-4">
+        <table class="table">
+            <thead class="my-background text-white">
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Image</th>
+                <th scope="col">Author</th>
+                <th scope="col">CreatedAt</th>
+                <th scope="col">UpdatedAt</th>
+                <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {{#each posts}}
+
+                <tr>
+                    <th scope="row">{{sum @index 1}}</th>
+                    <td>{{this.title}}</td>
+                    <td>Otto</td>
+                    <td>{{this.author.nameAuthor}}</td>
+                    <td>{{moment this.createdAt format = "yyyy-MM-DD"}}</td>
+                    <td>{{moment this.updatedAt format = "yyyy-MM-DD"}}</td>
+                    <td>
+                        <a href="/posts/{{this._id}}/edit"  class="py-2 px-3 my-background text-white">Edit</a>
+                        <a href="" class="py-2 px-3 btn-danger"  data-toggle="modal" data-id="{{this._id}}" data-target="#modal-delete-posts">Xóa</a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+            </table>
+    </div>
+</div>
+<div class="modal fade" id="modal-delete-posts" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc muốn xóa bài viết này?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button"id="btn-delete-post" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+<form method="post" name="form-delete-post"></form>
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        let postId;
+        const formDeletePost = document.forms[name="form-delete-post"]
+		const btnDeletePost = $('#btn-delete-post')
+
+        $('#modal-delete-posts').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget)
+            postId = button.data('id')
+        })
+		btnDeletePost.on('click', function (event) {
+			formDeletePost.action=`/posts/${postId}?_method=DELETE`
+			formDeletePost.submit()
+		})
+    })
+</script>
